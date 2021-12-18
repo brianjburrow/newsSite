@@ -34,6 +34,8 @@ class Story {
  * List of Story instances: used by UI to show story lists in DOM.
  */
 
+/* let newStory = await storyList.addStory(currentUser,
+  {title: "Test", author: "Me", url: "http://meow.com"} */
 class StoryList {
   constructor(stories) {
     this.stories = stories;
@@ -73,8 +75,18 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory( /* user, newStory */) {
+  async addStory(user, newStory) {
+    console.log('addingStory', newStory)
     // UNIMPLEMENTED: complete this function!
+    if (!currentUser) {
+      // redirect user to signup
+      navLoginClick();
+    };
+
+    let body = { story: newStory, token: user.loginToken };
+    let apiUrl = `${BASE_URL}/stories`
+    let response = await axios.post(apiUrl, body)
+    return new Story(response.data.story)
   }
 }
 
@@ -90,13 +102,13 @@ class User {
    */
 
   constructor({
-                username,
-                name,
-                createdAt,
-                favorites = [],
-                ownStories = []
-              },
-              token) {
+    username,
+    name,
+    createdAt,
+    favorites = [],
+    ownStories = []
+  },
+    token) {
     this.username = username;
     this.name = name;
     this.createdAt = createdAt;

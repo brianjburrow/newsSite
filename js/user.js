@@ -58,6 +58,7 @@ $signupForm.on("submit", signup);
 
 function logout(evt) {
   console.debug("logout", evt);
+  starsEmpty = true;
   localStorage.clear();
   location.reload();
 }
@@ -93,6 +94,7 @@ function saveUserCredentialsInLocalStorage() {
   if (currentUser) {
     localStorage.setItem("token", currentUser.loginToken);
     localStorage.setItem("username", currentUser.username);
+    localStorage.setItem("favoriteSet", JSON.stringify([]))
   }
 }
 
@@ -109,8 +111,10 @@ function saveUserCredentialsInLocalStorage() {
 
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
-
+  addStarSpans()
   $allStoriesList.show();
-
   updateNavOnLogin();
+  $navSubmit.show();
+  $navFavorites.show();
+  $navStories.show();
 }
