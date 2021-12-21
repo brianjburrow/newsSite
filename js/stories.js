@@ -132,14 +132,14 @@ Also updates the current user favorites based on the server response */
 async function toggleFavoriteInApi(storyId, toggleOn) {
   // parse info into a valid url
   let url = `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`
-
+  let obj = { token: currentUser.loginToken }
   let res
   if (toggleOn) {
     // add a favorite
     res = await axios.post(url, obj)
   } else {
     // remove a favorite
-    res = await axios.delete(url, { params: { token: currentUser.loginToken } })
+    res = await axios.delete(url, { params: obj })
   }
   // overwrite list contained in currentUser.favorites
   currentUser.favorites = res.data.user.favorites.map(obj => new Story(obj));
