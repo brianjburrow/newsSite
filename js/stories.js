@@ -126,24 +126,7 @@ function toggleFavorite(faStarElement) {
   faStarElement.classList.toggle('far'); // gray
 }
 
-/* Function to toggle a userFavorite on the server side (API)
-Also updates the current user favorites based on the server response */
 
-async function toggleFavoriteInApi(storyId, toggleOn) {
-  // parse info into a valid url
-  let url = `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`
-  let obj = { token: currentUser.loginToken }
-  let res
-  if (toggleOn) {
-    // add a favorite
-    res = await axios.post(url, obj)
-  } else {
-    // remove a favorite
-    res = await axios.delete(url, { params: obj })
-  }
-  // overwrite list contained in currentUser.favorites
-  currentUser.favorites = res.data.user.favorites.map(obj => new Story(obj));
-}
 
 /* create a function to handle when a user toggles on/off a favorite
 verifies that a user is logged in, and has clicked on a star representing a favorite-icon.
@@ -158,9 +141,9 @@ async function handleStoryListClick(evt) {
   let validStarIcon = target.classList.contains('fa-star')
   if (currentUser && validStarIcon) {
     // toggle the color classes
-    toggleFavorite(target);                           // update the class list to be fas / far
+    toggleFavorite(target);                           // update the html class list to be fas / far (UI)
     let isFavorite = target.classList.contains('fas') // if it is a favorite, we will add to api, otherwise delete
-    toggleFavoriteInApi(storyId, isFavorite);
+    currentUser.toggleFavoriteInApi(storyId, isFavorite);
   }
 }
 

@@ -122,12 +122,15 @@ class User {
     this.loginToken = token;
   }
 
+
+
   /** Register new user in API, make User instance & return it.
    *
    * - username: a new username
    * - password: a new password
    * - name: the user's full name
    */
+
 
   static async signup(username, password, name) {
     const response = await axios({
@@ -205,5 +208,25 @@ class User {
       console.error("loginViaStoredCredentials failed", err);
       return null;
     }
+  }
+
+  /* Function to toggle a userFavorite on the server side (API)
+  Also updates the current user favorites based on the server response */
+
+  async toggleFavoriteInApi(storyId, toggleOn) {
+    // parse info into a valid url
+    let url = `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`
+    let obj = { token: currentUser.loginToken }
+    let res
+    if (toggleOn) {
+      // add a favorite
+      res = await axios.post(url, obj)
+    } else {
+      // remove a favorite
+      res = await axios.delete(url, { params: obj })
+    }
+    // overwrite list contained in currentUser.favorites
+    this.favorites = res.data.user.favorites.map(obj => new Story(obj));
+
   }
 }
