@@ -59,10 +59,10 @@ function navFavorites() {
 
 $navFavorites.on('click', navFavorites)
 
-/* Function to handle when a user clicks to create a new story */
+/* Function to handle when a user clicks to view their own stories */
 
-function navStories() {
-  console.debug('navStories')
+function navStories(evt) {
+  console.debug('navStories, viewing user stories', evt)
   hidePageComponents()
   putStoriesOnPage(false, true);
 }

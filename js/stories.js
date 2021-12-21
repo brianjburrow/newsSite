@@ -2,7 +2,8 @@
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
-
+let deleteIndicatorClass = 'is-a-delete-btn'
+let starIndicatorClass = 'is-a-fav-star'
 
 /** Get and show stories when site first loads. */
 
@@ -26,8 +27,7 @@ function favoritesIncludes(currentStory) {
  * Checks to see if a story has been favorited, and colors the favorite star accordingly.
  * No return value
 */
-function addStarSpans() {
-  let starIndicatorClass = 'is-a-fav-star'                                                     // place in <i> element to identify favorite stars in document query (or jquery)
+function addStarSpans() {                                                   // place in <i> element to identify favorite stars in document query (or jquery)
   let noStarsDrawn = $(`.${starIndicatorClass}`).length === 0 ? true : false;                  // check to see if stars already displayed on page
   if (currentUser && noStarsDrawn) {
     // place favorite star icons on the page if none already drawn
@@ -38,6 +38,20 @@ function addStarSpans() {
     for (let currentStoryElement of displayedStoryHtmlElement) {
       let starClass = favoritesIncludes(currentStoryElement) ? 'fas' : 'far'                   // /determine color of star
       newSpan = $(`<span> <i class='${starIndicatorClass} fa-star ${starClass}'></i> </span>`) // create element with star
+      newSpan.prependTo(currentStoryElement);                                                  // add to the dom
+    }
+  }
+}
+
+/* Add delete buttons if the user */
+
+function addDeleteButtons() {
+  let noDeletesDrawn = $(`.${deleteIndicatorClass}`).length === 0 ? true : false;
+  if (currentUser && noDeletesDrawn) {
+    let displayedStoryHtmlElement = $allStoriesList.children();
+    let newSpan
+    for (let currentStoryElement of displayedStoryHtmlElement) {         // /determine color of star
+      newSpan = $(`<span> <i class='${deleteIndicatorClass} fa-trash-alt far'></i> </span>`) // create element with star
       newSpan.prependTo(currentStoryElement);                                                  // add to the dom
     }
   }
@@ -75,11 +89,13 @@ function putStoriesOnPage(onlyFavorites = false, onlyUserStories = false) {
   console.debug("putStoriesOnPage");
   $allStoriesList.empty();
   // loop through all of our stories and generate HTML for them
+  let toAddDelBtns = false
   let storiesOfInterest
   if (onlyFavorites) {
     storiesOfInterest = currentUser.favorites;
   } else if (onlyUserStories) {
     storiesOfInterest = currentUser.ownStories;
+    toAddDelBtns = true;
   } else {
     storiesOfInterest = storyList.stories;
   }
@@ -88,6 +104,7 @@ function putStoriesOnPage(onlyFavorites = false, onlyUserStories = false) {
     const $story = generateStoryMarkup(currentStory);
     $allStoriesList.append($story);
   }
+  if (toAddDelBtns) addDeleteButtons();
   addStarSpans();
   $allStoriesList.show();
 }
@@ -138,12 +155,19 @@ async function handleStoryListClick(evt) {
   let target = evt.target
   console.debug('handleStoryListClick', evt)
   let storyId = evt.target.parentNode.parentNode.id
-  let validStarIcon = target.classList.contains('fa-star')
+  let validStarIcon = target.classList.contains(starIndicatorClass)
   if (currentUser && validStarIcon) {
     // toggle the color classes
     toggleFavorite(target);                           // update the html class list to be fas / far (UI)
     let isFavorite = target.classList.contains('fas') // if it is a favorite, we will add to api, otherwise delete
     currentUser.toggleFavoriteInApi(storyId, isFavorite);
+  }
+
+  let validDeleteButton = target.classList.contains(deleteIndicatorClass);
+  if (currentUser && validDeleteButton) {
+    // delete a story from the API and remove from dom
+    storyList.deleteStory(currentUser, storyId);
+
   }
 }
 

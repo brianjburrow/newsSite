@@ -77,7 +77,7 @@ class StoryList {
    */
 
   async addStory(user, newStory) {
-    console.log('addingStory', newStory)
+    console.debug('addingStory', newStory)
     // UNIMPLEMENTED: complete this function!
     if (!currentUser) {
       // redirect user to signup
@@ -88,6 +88,18 @@ class StoryList {
     let apiUrl = `${BASE_URL}/stories`
     let response = await axios.post(apiUrl, body)
     return new Story(response.data.story)
+  }
+
+  async deleteStory(user, storyId) {
+    console.debug('deletingStory', storyId)
+    let url = `${BASE_URL}/stories/${storyId}`;
+    let body = { token: user.loginToken }
+    let res = axios.delete(url, { params: body })
+    let $targetStory = $(`#${storyId}`);
+    console.dir($targetStory);
+    $targetStory.remove();
+    currentUser.deleteStory(storyId);
+    this.stories = this.stories.filter(story => !(story.storyId === storyId));
   }
 }
 
@@ -227,6 +239,10 @@ class User {
     }
     // overwrite list contained in currentUser.favorites
     this.favorites = res.data.user.favorites.map(obj => new Story(obj));
+  }
 
+  deleteStory(storyId) {
+    this.favorites = this.favorites.filter(story => !(story.storyId === storyId));
+    this.ownStories = this.ownStories.filter(story => !(story.storyId === storyId));
   }
 }
