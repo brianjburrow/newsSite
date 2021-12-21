@@ -58,7 +58,6 @@ $signupForm.on("submit", signup);
 
 function logout(evt) {
   console.debug("logout", evt);
-  starsEmpty = true;
   localStorage.clear();
   location.reload();
 }
@@ -111,7 +110,7 @@ function saveUserCredentialsInLocalStorage() {
 
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
-  addStarSpans()
+  addStarSpans()          // add favorite star icons if the user is logged in
   $allStoriesList.show();
   updateNavOnLogin();
   $navSubmit.show();

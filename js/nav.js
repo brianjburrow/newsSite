@@ -27,7 +27,8 @@ $navLogin.on("click", navLoginClick);
 function navSubmitClick(evt) {
   if (currentUser) {
     console.debug('navSubmitClick', evt);
-    //hidePageComponents();
+    hidePageComponents();
+    putStoriesOnPage();
     $storyForm.show();
   } else {
     navLoginClick()
@@ -47,17 +48,23 @@ function updateNavOnLogin() {
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
+/* Function to handle when a user clicks to access their favorite stories */
+
 function navFavorites() {
   console.debug('navFavorites')
   hidePageComponents()
   putStoriesOnPage(true)
 }
 
+
 $navFavorites.on('click', navFavorites)
+
+/* Function to handle when a user clicks to create a new story */
 
 function navStories() {
   console.debug('navStories')
   hidePageComponents()
+  putStoriesOnPage(false, true);
 }
 
 $navStories.on('click', navStories)

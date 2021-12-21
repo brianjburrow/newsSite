@@ -25,7 +25,8 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    let validComs = new Set(['.com', '.edu', 'e'])
+    return this.url.replace('https', '').replace('http', '').replace("www.", '').replace('://', '').split('/')[0];
   }
 }
 
