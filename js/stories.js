@@ -65,10 +65,9 @@ function addDeleteButtons() {
  */
 
 function generateStoryMarkup(story) {
-  console.debug("generateStoryMarkup", story);
+  console.debug("generateStoryMarkup");
 
   const hostName = story.getHostName();
-  console.log(hostName)
 
   let newLi = $(`
   <li id="${story.storyId}">
