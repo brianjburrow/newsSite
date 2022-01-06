@@ -84,21 +84,28 @@ class StoryList {
       navLoginClick();
     };
 
-    let body = { story: newStory, token: user.loginToken };
-    let apiUrl = `${BASE_URL}/stories`
-    let response = await axios.post(apiUrl, body)
+    const body = { story: newStory, token: user.loginToken };
+    const apiUrl = `${BASE_URL}/stories`
+    const response = await axios.post(apiUrl, body)
     return new Story(response.data.story)
   }
 
   async deleteStory(user, storyId) {
     console.debug('deletingStory', storyId)
-    let url = `${BASE_URL}/stories/${storyId}`;
-    let body = { token: user.loginToken }
-    let res = axios.delete(url, { params: body })
+
+    // send delete request to database
+    const url = `${BASE_URL}/stories/${storyId}`;
+    const body = { token: user.loginToken }
+    axios.delete(url, { params: body })
+
+    // remove story from the DOM
     let $targetStory = $(`#${storyId}`);
-    console.dir($targetStory);
     $targetStory.remove();
+
+    // remove story from list of user's created stories
     currentUser.deleteStory(storyId);
+
+    // remove story from the list of stories
     this.stories = this.stories.filter(story => !(story.storyId === storyId));
   }
 }
@@ -145,6 +152,7 @@ class User {
 
 
   static async signup(username, password, name) {
+    // 
     const response = await axios({
       url: `${BASE_URL}/signup`,
       method: "POST",

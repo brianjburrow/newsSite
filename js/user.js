@@ -110,7 +110,7 @@ function saveUserCredentialsInLocalStorage() {
 
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
-  addStarSpans()          // add favorite star icons if the user is logged in
+  addStarSpans()                        // add favorite star icons if the user is logged in
   $allStoriesList.show();
   updateNavOnLogin();
   $navSubmit.show();

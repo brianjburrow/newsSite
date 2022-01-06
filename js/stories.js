@@ -151,6 +151,7 @@ it toggles the favorite in the API, and in the currentUser object
 */
 async function handleStoryListClick(evt) {
   if (!currentUser) return
+
   let target = evt.target
   console.debug('handleStoryListClick', evt)
   let storyId = evt.target.parentNode.parentNode.id
